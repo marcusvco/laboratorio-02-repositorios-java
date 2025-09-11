@@ -11,7 +11,7 @@ import stat
 
 load_dotenv()
 
-TOTAL_REPOSITORIOS = 5
+TOTAL_REPOSITORIOS = 100
 CK_JAR_PATH = "./ck/ck-0.7.1-SNAPSHOT-jar-with-dependencies.jar"
 REPOS_DIR = "./repositorios_clonados"
 OUTPUT_CSV_FILE = "analise_qualidade_repositorios.csv"
@@ -124,15 +124,20 @@ def text_to_csv(repositories, filename="output.csv"):
 
 if __name__ == "__main__":
     os.makedirs(REPOS_DIR, exist_ok=True)
-    repos_metadata = fetch_github_repos()
     
-    final_results = []
+    repos_metadata = fetch_github_repos()
     
     for i, repo_data in enumerate(repos_metadata):
         repo_name = repo_data["repositorio"]
         repo_local_path = os.path.join(REPOS_DIR, repo_name.split('/')[1])
         
         print(f"\n--- Processando {i+1}/{len(repos_metadata)}: {repo_name} ---")
+
+        default_ck_metrics = {
+            'cbo_media': 'N/A', 'dit_media': 'N/A', 
+            'lcom_media': 'N/A', 'tamanho_loc_total': 'N/A'
+        }
+        repo_data.update(default_ck_metrics)
 
         try:
             print(f"Clonando {repo_name}...")
@@ -142,54 +147,61 @@ if __name__ == "__main__":
                 check=True, capture_output=True, text=True
             )
 
-            print(f"Executando CK para {repo_name}...")
+            print("Procurando por diretórios de código-fonte ('src/main/java')...")
+            source_dirs = []
+            for root, dirs, files in os.walk(repo_local_path):
+                if '.git' in dirs:
+                    dirs.remove('.git')
+                if root.endswith(os.path.join('src', 'main', 'java')):
+                    source_dirs.append(root)
+            
+            if not source_dirs:
+                print(f"AVISO: Nenhum diretório 'src/main/java' encontrado. Repositório será salvo sem métricas CK.")
+                continue 
+
+            print(f"Diretórios de código encontrados: {len(source_dirs)}. Analisando cada um...")
+            
+            list_of_dfs = []
             ck_output_dir = os.path.join(repo_local_path, "ck_output")
             os.makedirs(ck_output_dir, exist_ok=True)
-            
-            ck_command = [
-                "java", "-jar", CK_JAR_PATH,
-                repo_local_path, "false", "0", "false", ck_output_dir
-            ]
-            result = subprocess.run(
-                ck_command, 
-                check=True, 
-                capture_output=True, 
-                text=True, 
-                encoding='utf-8' # Adicionado para melhor compatibilidade
-            )
-            
-            # IMPRIMIMOS O QUE O CK DISSE (SAÍDA PADRÃO E ERRO PADRÃO)
-            print(f"--- Saída do CK para {repo_name} ---")
-            print(f"STDOUT: {result.stdout}")
-            print(f"STDERR: {result.stderr}")
-            print("------------------------------------")
 
-            class_csv_path = os.path.join(ck_output_dir, "class.csv")
-            if os.path.exists(class_csv_path):
-                df_ck = pd.read_csv(class_csv_path)
+            for source_dir in source_dirs:
+                ck_command = [
+                    "java", "-jar", CK_JAR_PATH,
+                    source_dir, "false", "0", "false", ck_output_dir
+                ]
+                subprocess.run(
+                    ck_command, check=True, capture_output=True, text=True, encoding='utf-8'
+                )
+                
+                class_csv_path = os.path.join(ck_output_dir, "class.csv")
+                if os.path.exists(class_csv_path):
+                    df_temp = pd.read_csv(class_csv_path)
+                    list_of_dfs.append(df_temp)
+
+            if list_of_dfs:
+                df_ck = pd.concat(list_of_dfs, ignore_index=True)
                 
                 quality_metrics = {
-                        'cbo_media': df_ck['cbo'].mean(),
-                        'dit_media': df_ck['dit'].mean(),
-                        'lcom_media': df_ck['lcom'].mean(),
-                        'tamanho_loc_total': df_ck['loc'].sum() # LOC para a métrica de Tamanho
-                    }
+                    'cbo_media': df_ck['cbo'].mean(),
+                    'dit_media': df_ck['dit'].mean(),
+                    'lcom_media': df_ck['lcom'].mean(),
+                    'tamanho_loc_total': df_ck['loc'].sum()
+                }
                 
-                # Juntamos os metadados do GitHub com as métricas de qualidade
                 repo_data.update(quality_metrics)
-                final_results.append(repo_data)
                 print(f"Análise de {repo_name} concluída com sucesso.")
             else:
-                print(f"AVISO: Arquivo class.csv não foi gerado para {repo_name}. Pulando.")
+                print(f"AVISO: Análise CK não gerou dados para {repo_name}.")
 
         except subprocess.CalledProcessError as e:
-            print(f"ERRO ao processar {repo_name}: {e.stderr}")
+            error_message = e.stderr.encode('utf-8', 'ignore').decode('utf-8')
+            print(f"ERRO durante a análise CK de {repo_name}: {error_message}")
         
         finally:
-            # ETAPA DE AUTOMAÇÃO 4: LIMPAR (REMOVER A PASTA DO REPOSITÓRIO)
             if os.path.exists(repo_local_path):
                 print(f"Limpando pasta de {repo_name}...")
                 shutil.rmtree(repo_local_path, onerror=remove_readonly)
     
-    text_to_csv(final_results, OUTPUT_CSV_FILE)
+    text_to_csv(repos_metadata, OUTPUT_CSV_FILE)
     print(f"\n✅ Processo finalizado! Resultados salvos em '{OUTPUT_CSV_FILE}'")
