@@ -67,12 +67,11 @@ Neste trabalho, analisamos **repositórios Java populares no GitHub** sob a pers
 ## 📊 Resultados (a preencher)
 
 ### 🔹 RQ01: Popularidade × Qualidade
-| Métrica de Qualidade | Média | Mediana | Desvio Padrão |
-|-----------------------|-------|---------|---------------|
-| **CBO**              |       |         |               |
-| **DIT**              |       |         |               |
-| **LCOM**             |       |         |               |
 
+![RQ01](./img/RQ01.png)
+
+Embora ter boa qualidade (baixo CBO, DIT e LCOM) não garanta a popularidade (visto que há muitos projetos de boa qualidade com poucas estrelas), os gráficos mostram que ter má qualidade parece impedir que um projeto se torne popular.
+Em outras palavras, as características de um código bem estruturado, de fácil manutenção, coeso e com baixa complexidade parecem ser pré-requisitos para que um repositório alcance um alto nível de popularidade na comunidade de desenvolvedores.
 ---
 
 ### 🔹 RQ02: Maturidade × Qualidade
