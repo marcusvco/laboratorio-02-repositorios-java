@@ -9,7 +9,7 @@ from ck import clone_repo, run_ck
 
 load_dotenv()
 
-TOTAL_REPOSITORIOS = 1
+TOTAL_REPOSITORIOS = 1000
 
 token = os.getenv("GITHUB_TOKEN")
 headers = {"Authorization": f"Bearer {token}"}
