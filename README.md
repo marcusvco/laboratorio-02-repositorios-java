@@ -64,50 +64,87 @@ Neste trabalho, analisamos **repositórios Java populares no GitHub** sob a pers
 
 ---
 
-## 📊 Resultados (a preencher)
+## 📊 Resultados
 
 ### 🔹 RQ01: Popularidade × Qualidade
 
 ![RQ01](./img/RQ01.png)
 
-Embora ter boa qualidade (baixo CBO, DIT e LCOM) não garanta a popularidade (visto que há muitos projetos de boa qualidade com poucas estrelas), os gráficos mostram que ter má qualidade parece impedir que um projeto se torne popular.
-Em outras palavras, as características de um código bem estruturado, de fácil manutenção, coeso e com baixa complexidade parecem ser pré-requisitos para que um repositório alcance um alto nível de popularidade na comunidade de desenvolvedores.
+Embora ter boa qualidade (baixo CBO, DIT e LCOM) não garanta a popularidade (há muitos projetos de boa qualidade com poucas estrelas), os dados sugerem que **má qualidade parece impedir que um projeto se torne popular**.  
+
+Ou seja, características como **baixo acoplamento, boa coesão e hierarquia controlada** parecem ser pré-requisitos para que um repositório alcance grande destaque.  
+
+**Top 100 repositórios mais populares (mais estrelas):**
+
+| Métrica de Qualidade | Média   | Mediana | Desvio Padrão |
+|-----------------------|---------|---------|---------------|
+| **CBO**              | 1.139,8 | 486,0   | 1.834,1       |
+| **DIT**              | 496,5   | 289,5   | 711,5         |
+| **LCOM**             | 1.258,4 | 227,5   | 3.193,4       |
+
 ---
 
 ### 🔹 RQ02: Maturidade × Qualidade
-| Métrica de Qualidade | Média | Mediana | Desvio Padrão |
-|-----------------------|-------|---------|---------------|
-| **CBO**              |       |         |               |
-| **DIT**              |       |         |               |
-| **LCOM**             |       |         |               |
+Nos **100 repositórios mais maduros (mais antigos)**, observamos um aumento do acoplamento (CBO) em relação aos mais populares, sugerindo que **o acoplamento tende a crescer com o tempo**.  
+
+| Métrica de Qualidade | Média   | Mediana | Desvio Padrão |
+|-----------------------|---------|---------|---------------|
+| **CBO**              | 1.583,9 | 808,5   | 1.472,0       |
+| **DIT**              | 321,8   | 290,0   | 258,9         |
+| **LCOM**             | 1.132,1 | 557,5   | 1.638,4       |
 
 ---
 
 ### 🔹 RQ03: Atividade × Qualidade
-| Métrica de Qualidade | Média | Mediana | Desvio Padrão |
-|-----------------------|-------|---------|---------------|
-| **CBO**              |       |         |               |
-| **DIT**              |       |         |               |
-| **LCOM**             |       |         |               |
+Os **100 repositórios mais ativos (com mais releases)** apresentam as menores médias de CBO e DIT entre todos os grupos analisados. Isso indica que **um ciclo de releases frequente pode estar associado a práticas que controlam melhor acoplamento e complexidade**.  
+
+| Métrica de Qualidade | Média   | Mediana | Desvio Padrão |
+|-----------------------|---------|---------|---------------|
+| **CBO**              | 992,3   | 709,0   | 1.096,9       |
+| **DIT**              | 309,8   | 277,5   | 266,0         |
+| **LCOM**             | 1.155,5 | 390,5   | 2.503,6       |
 
 ---
 
 ### 🔹 RQ04: Tamanho × Qualidade
-| Métrica de Qualidade | Média | Mediana | Desvio Padrão |
-|-----------------------|-------|---------|---------------|
-| **CBO**              |       |         |               |
-| **DIT**              |       |         |               |
-| **LCOM**             |       |         |               |
+Para esta análise, o **tamanho foi inferido pelo número de linhas de código (LOC)**.  
+Os **100 maiores repositórios** apresentam os valores médios mais altos em todas as métricas de qualidade, confirmando a hipótese de que **sistemas maiores tendem a ser mais complexos, mais acoplados e menos coesos**.  
+
+| Métrica de Qualidade | Média   | Mediana | Desvio Padrão |
+|-----------------------|---------|---------|---------------|
+| **CBO**              | 3.327,1 | 2.067,5 | 3.794,5       |
+| **DIT**              | 913,3   | 554,5   | 1.168,0       |
+| **LCOM**             | 4.885,9 | 1.109,0 | 10.655,0      |
 
 ---
 
-## 🗣️ Discussão (a preencher)
-> Nesta seção serão comparadas as hipóteses informais com os resultados obtidos, analisando se as tendências esperadas se confirmaram ou não.  
+## 🗣️ Discussão
+
+A análise realizada permitiu comparar as hipóteses informais com os resultados obtidos para cada questão de pesquisa.  
+
+- **RQ01 – Popularidade × Qualidade**  
+  A hipótese inicial sugeria que projetos mais populares apresentariam melhores métricas de qualidade.  
+  Os resultados indicaram que, de fato, **nenhum projeto com métricas de qualidade muito ruins atingiu alta popularidade**. No entanto, a relação não é determinística: existem projetos de boa qualidade com poucas estrelas. Assim, podemos concluir que **boa qualidade é um pré-requisito, mas não suficiente para a popularidade**.  
+
+- **RQ02 – Maturidade × Qualidade**  
+  Esperávamos que sistemas mais antigos apresentassem maior estabilidade, mas também possíveis problemas de acoplamento.  
+  Os resultados confirmaram essa hipótese: **repositórios mais maduros tiveram valores médios mais altos de CBO**, evidenciando que, ao longo do tempo, há tendência de aumento do acoplamento. Já o DIT e o LCOM não apresentaram crescimento tão expressivo, indicando que a evolução afeta mais o acoplamento do que a coesão ou a profundidade de herança.  
+
+- **RQ03 – Atividade × Qualidade**  
+  A hipótese era de que repositórios mais ativos (com mais releases) teriam métricas de qualidade melhores.  
+  Os resultados mostraram que os repositórios mais ativos tiveram **menores valores médios de CBO e DIT**, sugerindo que **um ciclo de releases frequente está associado a práticas de engenharia que ajudam a manter o código mais modular e menos complexo**. Essa hipótese foi confirmada.  
+
+- **RQ04 – Tamanho × Qualidade**  
+  Esperávamos que repositórios maiores (em LOC) apresentassem métricas piores de qualidade.  
+  Os resultados confirmaram fortemente essa hipótese: os repositórios maiores apresentaram **os valores mais altos de CBO, DIT e LCOM**, mostrando que **o crescimento do tamanho do sistema está associado ao aumento do acoplamento, da profundidade de herança e à diminuição da coesão**.  
 
 ---
 
-## 🎁 Bônus (opcional)
-- Gráficos de correlação entre métricas de processo e de qualidade.  
-- Testes estatísticos (ex.: Spearman ou Pearson) para validar as correlações observadas.  
+### ✅ Conclusão Geral
+De modo geral, os resultados mostraram que:  
+- **Popularidade** exige boa qualidade, mas não garante sucesso.  
+- **Maturidade** aumenta o risco de acoplamento excessivo.  
+- **Atividade** (releases frequentes) favorece manutenção da qualidade.  
+- **Tamanho** é um forte fator de degradação da qualidade interna.  
 
----
+Essas observações reforçam a importância de práticas de engenharia contínuas, como **refatoração, modularização e integração contínua**, para manter a qualidade em projetos Java de longo prazo.  
