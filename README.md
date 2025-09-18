@@ -87,6 +87,8 @@ Ou seja, características como **baixo acoplamento, boa coesão e hierarquia con
 ### 🔹 RQ02: Maturidade × Qualidade
 Nos **100 repositórios mais maduros (mais antigos)**, observamos um aumento do acoplamento (CBO) em relação aos mais populares, sugerindo que **o acoplamento tende a crescer com o tempo**.  
 
+![RQ02](./img/RQ02.png)
+
 | Métrica de Qualidade | Média   | Mediana | Desvio Padrão |
 |-----------------------|---------|---------|---------------|
 | **CBO**              | 1.583,9 | 808,5   | 1.472,0       |
@@ -96,7 +98,9 @@ Nos **100 repositórios mais maduros (mais antigos)**, observamos um aumento do 
 ---
 
 ### 🔹 RQ03: Atividade × Qualidade
-Os **100 repositórios mais ativos (com mais releases)** apresentam as menores médias de CBO e DIT entre todos os grupos analisados. Isso indica que **um ciclo de releases frequente pode estar associado a práticas que controlam melhor acoplamento e complexidade**.  
+Os **100 repositórios mais ativos (com mais releases)** apresentam as menores médias de CBO e DIT entre todos os grupos analisados. Isso indica que **um ciclo de releases frequente pode estar associado a práticas que controlam melhor acoplamento e complexidade**.
+
+![RQ03](./img/RQ03.png)
 
 | Métrica de Qualidade | Média   | Mediana | Desvio Padrão |
 |-----------------------|---------|---------|---------------|
@@ -109,6 +113,8 @@ Os **100 repositórios mais ativos (com mais releases)** apresentam as menores m
 ### 🔹 RQ04: Tamanho × Qualidade
 Para esta análise, o **tamanho foi inferido pelo número de linhas de código (LOC)**.  
 Os **100 maiores repositórios** apresentam os valores médios mais altos em todas as métricas de qualidade, confirmando a hipótese de que **sistemas maiores tendem a ser mais complexos, mais acoplados e menos coesos**.  
+
+![RQ04](./img/RQ04.png)
 
 | Métrica de Qualidade | Média   | Mediana | Desvio Padrão |
 |-----------------------|---------|---------|---------------|
